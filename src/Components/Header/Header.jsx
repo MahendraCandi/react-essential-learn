@@ -1,4 +1,5 @@
-import reactImg from "../assets/react-core-concepts.png";
+import reactImg from "../../assets/react-core-concepts.png";
+import "./Header.css";
 
 const firstWord = ['Fundamental', 'Core', 'Cruise'];
 function genRandomNumber(maxValue) {

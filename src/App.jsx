@@ -1,5 +1,5 @@
 import {CORE_CONCEPTS} from "./data";
-import Header from "./Components/Header";
+import Header from "./Components/Header/Header";
 import CoreConceptList from "./Components/CoreConceptList";
 
 // Manipulate array to map and using object destructing
