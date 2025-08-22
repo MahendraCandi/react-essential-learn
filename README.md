@@ -18,7 +18,7 @@ Javascript function will be called as component if:
 1. Name start with uppercase character
 2. Return "Renderable" content
 
-```
+```javascript
 // inside a jsx file
 // component name should represent the UI
 function AppHeader() {
@@ -53,7 +53,7 @@ function OtherComponent() {
 Syntax that can be used in HTML and will be rendered as a value.
 Can contain javascript expression.
 
-```
+```javascript
 // inside a jsx file
 let randomName = ['John', 'Jane', 'Bob'];
 
@@ -77,7 +77,7 @@ function CustomComponent() {
 Avoid define image like traditional HTML, because when application build to deployed in production,
 the image info possibility will be lost. Thus, recommend use React way to define image in HTML tag.
 
-```
+```javascript
 // inside a jsx file
 
 // notice the variable myImage pointing to image source
@@ -101,12 +101,12 @@ function CustomComponent() {
 
 Behind the scene, React will transform defined attribute (aka _props_) in component into an object.
 
-```
+```javascript
 // inside a jsx file
 
-const imageA import './assets/imgA.png';
-const imageB import './assets/imgB.png';
-const imageC import './assets/imgC.png';
+import imageA from './assets/imgA.png';
+import imageB from './assets/imgB.png';
+import imageC from './assets/imgC.png';
 
 // notice this function only have one parameter **AS AN OBJECT**
 function CardTitle(props) {
@@ -134,3 +134,190 @@ function TitleWrapper() {
 }
 
 ```
+
+# Props shorthand
+
+By using this way we may avoid the attribute definitions when use the component.
+Also, this is can be useful when retrieving data from APIs.
+
+> Please a note, the component props and the data attribute should have similar name
+
+```javascript
+// a jsx file that export some data
+import imageA from './assets/imgA.png';
+import imageB from './assets/imgB.png';
+import imageC from './assets/imgC.png';
+
+export const ÏMAGE_DATA = [
+    {
+        image : imageA, 
+        title : "Product A", 
+        description : "Car that has 5 tires"
+    },
+    {
+        image : imageB, 
+        title : "Product B", 
+        description : "Commuters that faster than light"
+    },
+    {
+        image : imageC, 
+        title : "Product C", 
+        description : "Robot that can fly"
+    }
+];
+
+// a jsx file that consume data in component
+import IMAGE_DATA from './data.js'; // import the IMAGE_DATA from js file
+
+// component use the image data
+// notice the spread operator (three dots), is use to extract array into individual element
+function TitleWrapper() {
+
+    return (
+        <main>
+            <CardTitle {...IMAGE_DATA[0]}/>
+            <CardTitle {...IMAGE_DATA[1]}/>
+            <CardTitle {...IMAGE_DATA[2]}/>
+        </main>
+    );
+}
+
+function CardTitle(props) {
+    return (
+        <div>
+            <img src={props.image} alt={props.title} />
+            <h3>{props.title}</h3>
+            <p>{props.description}</p>
+        </div>
+    );
+}
+
+```
+
+# Props destructuring object
+
+The component props that used as a parameter may be destructuring by using Javascript features.
+
+```javascript
+// this compoenent should be similar
+
+// destructuring object
+function CardTitle({ image, title, description }) {
+    return (
+        <div>
+            <img src={image} alt={title} />
+            <h3>{title}</h3>
+            <p>{description}</p>
+        </div>
+    );
+}
+
+// using object
+function CardTitle(props) {
+    return (
+        <div>
+            <img src={props.image} alt={props.title} />
+            <h3>{props.title}</h3>
+            <p>{props.description}</p>
+        </div>
+    );
+}
+
+```
+
+# Props default value
+
+In Javascript, it is possible to set a default value for destructing object parameter.
+
+```javascript
+function CardTitle({ image, title='untitled', description='lorem ipsum...' }) {
+    return (
+        <div>
+            <img src={image} alt={title} />
+            <h3>{title}</h3>
+            <p>{description}</p>
+        </div>
+    );
+}
+```
+
+# Separate component in JSX file
+
+> It is recommended for a component to has its own jsx file except for component that related very close each other
+
+```
+src
+├───assets
+├───components
+│    ├───Header
+│    │   └───Header.jsx
+│    │   └───Header.css
+│    └───CardTitle
+│        └───CardTitle.jsx
+│        └───CardTitle.css
+└───App.jsx
+```
+
+```javascript
+// inside Header.jsx
+
+import './Header.css';
+
+// notice the default sintax
+// means that the function will export as default file
+// so the caller doesn't have to mention the function again
+export default function Header() {
+    return (
+        <div>
+            <h1>A header</h1>
+        </div>
+    );
+}
+
+```
+
+```javascript
+// inside App.jsx
+import Header from './components/Header/Header.jsx';
+
+function App() {
+    return (
+        <div>
+            <Header/>
+        </div>
+    );
+}
+```
+
+# Children Props
+
+> A content between closed-enclosed of component
+
+`props` has special attribute `props.children` that by default always present.
+This attribute is used to get content between component closed-enclosed element.
+
+The content inside could be another jsx element, another component, or just a string.
+
+```javascript
+function SomeComponent() {
+    return (
+        <Header>
+            <CardTitle />
+        </Header>
+    );
+}
+
+// inside Header component
+// notice the children attribute, it is react built-in attribute to call 
+// the content between closed-enclosed component
+function Header({ children }) {
+    return (
+        <header>
+            <h1>My Header</h1>
+            {children}
+        </header>
+    );
+}
+```
+
+# Listening on event
