@@ -321,3 +321,202 @@ function Header({ children }) {
 ```
 
 # Listening on event
+
+We can listen on event on element.
+
+
+```javascript
+function CustomButton({ children }) {
+    function handleClick() {
+        console.log('Click me');
+    }
+    
+    return (
+        <button onClick={handleClick}>{children}</button>
+    );
+}
+```
+
+Please notice the function name inside `onClick` attribute.
+If we put the function name with parenthesis `{handleClick()}`, it will be executed during rendering process.
+We don't want that, because we want to execute the function when user click on the button.
+Thus, it is recommended to pass only the function name without parenthesis.
+
+# Passing function as value
+
+From the parent component, we can pass function as value to child component.
+That function will be executed inside child component.
+As a result, the parent can use the process in the function.
+
+```javascript
+function ParentComponent() {
+    function handleClick() {
+        // do something
+    }
+    
+    return (
+        <List>
+            <CustomButton onClick={handleClick}><CustomComponent/></CustomButton>
+            <CustomButton onClick={handleClick}><CustomComponent/></CustomButton>
+            <CustomButton onClick={handleClick}><AnotherCustomComponent/></CustomButton>
+        </List>
+    );
+}
+
+function CustomButton({ children, onClick }) {
+    return (
+        <button onClick={onClick}>{children}</button>
+    );
+}
+```
+# Passing function with argument as value
+
+By using anonymous function, we can pass function with argument as value.
+
+```javascript
+function ParentComponent() {
+    function handleClick(selectedItem) {
+        console.log(selectedItem);
+    }
+    
+    return (
+        <List>
+            <CustomButton onClick={() => handleClick('Item A')}><CustomComponent/></CustomButton>
+            <CustomButton onClick={() => handleClick('Item B')}><CustomComponent/></CustomButton>
+            <CustomButton onClick={() => handleClick('Item C')}><AnotherCustomComponent/></CustomButton>
+        </List>
+    );
+}
+
+function CustomButton({ children, onClick }) {
+    return (
+        <button onClick={onClick}>{children}</button>
+    );
+}
+```
+
+# Component Render State
+
+1. By default react will only render components once
+2. To notify react that the component need to be re-rendered, we can use `useState`
+3. `useState` is a hook function. "Hook" function in React mean attaching/connecting our code to React system.
+4. Hook function should be called inside Top level of Component function.
+
+This NOT ALLOWED:
+
+```javascript
+export default function App() {
+    function handleClick(selectedItem) {
+        useState('');
+    }
+    return (
+        <>
+            // some content
+        </>
+    );
+}
+```
+
+This IS ALLOWED:
+
+```javascript
+export default function App() {
+    useState('');
+    function handleClick(selectedItem) {
+        // do something
+    }
+    return (
+        <>
+            // some content
+        </>
+    );
+}
+```
+
+5. `useState` will return an array with two element.
+6. The first element is the state value.
+7. The second element is a function that can be used to update the state value.
+
+```javascript
+export default function App() {
+    // notice the brackets, it is called array destructuring
+    // it destructure the return array into two variables
+    const [item, setItem] = useState('my initial value'); // initial value could be any type, null, boolean, string, number, array, object
+    
+    function handleClick(selectedItem) {
+        // do something
+    }
+    return (
+        <>
+            // some content
+        </>
+    );
+}
+```
+
+8. Calling the second element (a.k.a the function element) will tell react to update the component where `useState`.
+9. All the first and second element will always be updated, so that it is okay to using const instead of let.
+
+```javascript
+import { useState } from 'react';
+
+const FRAMEWORK_ITEMS = {
+    react: {
+        name: "React",
+        type: "frontend",
+        language: "JavaScript",
+        website: "https://react.dev"
+    },
+    vite: {
+        name: "Vite",
+        type: "build-tool",
+        language: "JavaScript/TypeScript",
+        website: "https://vitejs.dev"
+    },
+    node: {
+        name: "Node.js",
+        type: "runtime",
+        language: "JavaScript",
+        website: "https://nodejs.org"
+    }
+};
+
+
+export default function App() {
+    const [selectedFramework, setSelectedFramework] = useState(null);
+    
+    function handleFramework(selectedItem) {
+        setSelectedFramework(selectedItem);
+    }
+    return (
+        <>
+            <div>
+                <li><CustomButton onClick={handleFramework}>React</CustomButton></li>
+                <li><CustomButton onClick={handleFramework}>Vite</CustomButton></li>
+                <li><CustomButton onClick={handleFramework}>Node</CustomButton></li>
+            </div>
+            <div>
+            {
+                selectedFramework === null ? 
+                    <p>Please hit a button</p>
+                    :
+                    (
+                    <h3>FRAMEWORK_ITEMS[selectedFramework].name</h3>
+                    <p>Type: FRAMEWORK_ITEMS[selectedFramework].type</p>
+                    <p>Language: FRAMEWORK_ITEMS[selectedFramework].language</p>
+                    <p>Website: FRAMEWORK_ITEMS[selectedFramework].website</p>
+                )
+            }
+            </div>
+        </>
+    );
+}
+
+function CustomButton({ children, onClick }) {
+    return (
+        <button onClick={onClick}>{children}</button>
+    );
+}
+
+
+```
