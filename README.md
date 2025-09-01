@@ -520,3 +520,117 @@ function CustomButton({ children, onClick }) {
 
 
 ```
+
+# Dynamic CSS stylish
+
+In JSX, the attribute `className` is used to define CSS class. 
+By using curly brace, we can add conditions to the class name.
+Example below, to add `active-button` class when the button is clicked.
+
+```javascript
+export default function App() {
+    const [selectedFramework, setSelectedFramework] = useState(null);
+    
+    function handleFramework(selectedItem) {
+        setSelectedFramework(selectedItem);
+    }
+    return (
+        <>
+            <div>
+                <li><CustomButton 
+                    isSelected={FRAMEWORK_ITEMS[selectedFramework] === 'react'} 
+                    onClick={handleFramework}>
+                    React
+                </CustomButton></li>
+                <li><CustomButton 
+                    isSelected={FRAMEWORK_ITEMS[selectedFramework] === 'vite'} 
+                    onClick={handleFramework}>
+                    Vite
+                </CustomButton></li>
+                <li><CustomButton 
+                    isSelected={FRAMEWORK_ITEMS[selectedFramework] === 'node'} 
+                    onClick={handleFramework}>
+                    Node
+                </CustomButton></li>
+            </div>
+            <div>
+            {
+                selectedFramework === null ? 
+                    <p>Please hit a button</p>
+                    :
+                    (
+                    <h3>FRAMEWORK_ITEMS[selectedFramework].name</h3>
+                    <p>Type: FRAMEWORK_ITEMS[selectedFramework].type</p>
+                    <p>Language: FRAMEWORK_ITEMS[selectedFramework].language</p>
+                    <p>Website: FRAMEWORK_ITEMS[selectedFramework].website</p>
+                )
+            }
+            </div>
+        </>
+    );
+}
+
+function CustomButton({ children, onClick, isSelected }) {
+    return (
+        <button className={isSelected ? 'active-button' : undefined} onClick={onClick}>{children}</button>
+    );
+}
+```
+
+# Using array to render dynamic content
+
+Handle dynamic list of value by using javascript map function.
+
+```javascript
+
+const FRAMEWORK_ITEMS = {
+    react: {
+        name: "React",
+        type: "frontend",
+        language: "JavaScript",
+        website: "https://react.dev"
+    },
+    vite: {
+        name: "Vite",
+        type: "build-tool",
+        language: "JavaScript/TypeScript",
+        website: "https://vitejs.dev"
+    },
+    node: {
+        name: "Node.js",
+        type: "runtime",
+        language: "JavaScript",
+        website: "https://nodejs.org"
+    }
+};
+
+export default function App() {
+    const [selectedFramework, setSelectedFramework] = useState(null);
+
+    function handleFramework(selectedItem) {
+        setSelectedFramework(selectedItem);
+    }
+
+    return (
+        <ul>
+            {
+                FRAMEWORK_ITEMS.map((item) => {
+                    CardPreview({...item}) // destructuring object of framework item
+                })
+            }
+        </ul>
+    );
+}
+
+function CardPreview({ title, type, language, website }) {
+    return (
+        <div>
+            <h3>{title}</h3>
+            <p>Type: {type}</p>
+            <p>Language: {language}</p>
+            <a>{website}</a>
+        </div> 
+    );
+}
+
+```
