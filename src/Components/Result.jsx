@@ -1,13 +1,18 @@
-import {formatter} from "../util/investment.js";
+import {calculateInvestmentResults, formatter} from "../util/investment.js";
 
-export default function Result({calculatorResult}) {
-
+export default function Result({calculator}) {
+    let calculatorResults = [];
     let initialInvestment = 0;
-    if (calculatorResult.length > 0) {
-         initialInvestment =
-            calculatorResult[0].valueEndOfYear -
-            calculatorResult[0].interest -
-            calculatorResult[0].annualInvestment;
+    if (calculator.initialInvestment &&
+        calculator.annualInvestment &&
+        calculator.expectedReturn &&
+        calculator.duration) {
+        calculatorResults = calculateInvestmentResults(calculator);
+
+        initialInvestment =
+            calculatorResults[0].valueEndOfYear -
+            calculatorResults[0].interest -
+            calculatorResults[0].annualInvestment;
     }
 
     return (
@@ -23,7 +28,7 @@ export default function Result({calculatorResult}) {
             </thead>
             <tbody>
             {
-                calculatorResult.map((result, index) => {
+                calculatorResults.map((result, index) => {
                     const totalInterest = result.valueEndOfYear - result.annualInvestment *
                         result.year - initialInvestment;
                     const totalAmountInvestment = result.valueEndOfYear - totalInterest;
