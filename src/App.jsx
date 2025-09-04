@@ -22,7 +22,7 @@ function App() {
             const newState = {
                 input : {
                     ...prevState.input,
-                    [name]: value,
+                    [name]: +value,
                 },
                 results: [...prevState.results]
             }
